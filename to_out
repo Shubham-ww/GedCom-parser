@@ -1,26 +1,45 @@
 <gedcom>
-  <SUBM id="@SM2@">
-    <CHAN value="asdja">
-      <DATE value="12 Mar 2000">
-        <TEMP>
-          tygdhb
-        </TEMP>
-        <TYSF value="asdub">
-          <UYUY>
-            ierbe
-          </TYHB>
-        </TYSF>
-        <TYGC value="otkmh">
-          <TYHB>
-            afhu ajsasd
-          </TYHB>
-        </TYGC>
-      </DATE>
-    </CHAN>
-    <RIN value="2">
-      <UOJB>
-        kojifs
-      </UOJB>
-    </RIN>
-  </SUBM>
-</gedcom
+<SUBM id="@SM2@">
+<CHAN value="asdja">
+<DATE value="12 Mar 2000">
+<TEMP>
+tygdhb
+</TEMP>
+<TYSF value="asdub">
+<UYUY>
+ierbe
+</UYUY>
+</TYSF>
+<TYGC value="otkmh">
+<TYHB>
+afhu ajsasd
+</TYHB>
+</TYGC>
+</DATE>
+</CHAN>
+<RIN value="2">
+<UOJB>
+kojifs
+</UOJB>
+</RIN>
+</SUBM>
+<INDI id="@I12@">
+<NAME>
+Extra URL /Filelinks/
+</NAME>
+<SEX>
+F
+</SEX>
+<BIRT value="dshfi">
+<DATE>
+1875
+</DATE>
+</BIRT>
+<@F5@ id=FAMC>
+
+</@F5@>
+<@N23@ id=NOTE>
+
+</@N23@>
+</INDI>
+</gedcom>
