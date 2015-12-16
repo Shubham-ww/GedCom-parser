@@ -10,6 +10,7 @@ $res = Hash.new
 $res_var = 0
 $x = 0
 $var = 0
+$last_var = nil
 $last_level = 1
 #[level, id, tag, data]
 case1, case2, case3 = false
@@ -21,8 +22,23 @@ zero_levelRegex = /^(0) (@[A-z0-9]*@) ([A-Z]{3,4})$/
 
 def check_child(r_hash, values, level, var)
   if level < (values[0].to_i)
+    if (flag = (level == values[0].to_i - 1 && $last_level == values[0].to_i)) || r_hash[var].class == Hash
+      if flag
+        var += 1
+        check_child(r_hash, values, level + 1, var)
+      else
+        check_child(r_hash[var], values, level + 1, var)
+      end
+    else
+      r_hash[var] = Hash.new
+      r_hash[var]["id"] = values[1] if !values[1].nil?
+      r_hash[var]["tag"] = values[2] if !values[2].nil?
+      r_hash[var]["data"] = values[3] if !values[3].nil?
+      $last_level = values[0].to_i
+    end
+  else
     if r_hash[var].class == Hash
-      check_child(r_hash[var], values, level + 1, var)
+      check_child(r_hash, values, level, var + 1)
     else
       r_hash[var] = Hash.new
       r_hash[var]["id"] = values[1] if !values[1].nil?
@@ -35,7 +51,7 @@ end
 
 def update_hash(parts)
   $var = @temp.count - 2
-  if (flag = $last_level < parts[0].to_i) || parts[0].to_i > 1
+  if $last_level < parts[0].to_i || parts[0].to_i > 1
     $var -= 1
     check_child(@temp, parts, $x, $var)
   elsif @temp[$var].nil?
@@ -103,4 +119,4 @@ while line = gets
   end
 end
 ap @temp
-HashToXml.convert(@temp)
+# HashToXml.convert(@temp)
