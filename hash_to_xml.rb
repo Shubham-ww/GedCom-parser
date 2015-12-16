@@ -1,10 +1,9 @@
-
-require 'pry'
-
 module HashToXml
   def self.convert(h)
     puts "<gedcom>"
-    print self.process_hash(h).to_s
+    for i in 0...(h.count)
+      print self.process_hash(h[i]).to_s
+    end
     puts "</gedcom>"
   end
 

@@ -2,20 +2,17 @@
 $LOAD_PATH << '.'
 require "hash_to_xml"
 require 'xmlsimple'
-require 'pry'
-require 'ap'
 
 @temp = Hash.new
-$res = Hash.new
+@res = Hash.new
 $res_var = 0
 $x = 1
 $var = 0
-$last_child_for = nil
 $last_level = 1
 #[level, id, tag, data]
 case1, case2, case3 = false
 
-case1Regex = /^(\d{1}) ([A-Z]{3,4}) ([^@]{1}[A-z0-9\-\@\.\:\ ]*[^@]{1}$)/
+case1Regex = /^(\d{1}) ([A-Z]{3,4}) ([^@]{1}[A-z0-9\-\@\.\:\ \/]*[^@]{1}$)/
 case2Regex = /^(\d{1}) (@[A-z0-9]*@) ([A-Z]{3,4})$/
 case3Regex = /^(\d{1}) ([A-Z]{3,4}) (@[A-z0-9]*@)$/
 zero_levelRegex = /^(0) (@[A-z0-9]*@) ([A-Z]{3,4})$/
@@ -52,16 +49,16 @@ def zero_level(line)
   parts = line.chomp.split(" ")
   parts.insert(3, nil)
   if !@temp.empty?
-    $res[$res_var] = @temp
+    @res[$res_var] = @temp
     $res_var += 1
-    @temp.clear
+    @temp = Hash.new
   end
   @temp["id"] = parts[1] if !parts[1].nil?
   @temp["tag"] = parts[2] if !parts[2].nil?
 end
 
 def case_1(line)
-  line.match(/^(\d{1}) ([A-Z]{3,4}) ([A-z0-9\-\@\.\:\ ]*)$/)
+  line.match(/^(\d{1}) ([A-Z]{3,4}) ([A-z0-9\-\@\.\:\ \/]*)$/)
   parts = Array.new
   parts << $1 << nil << $2 << $3
   update_hash(parts)
@@ -102,5 +99,5 @@ while line = gets
     p "Invalid GEDCOM file!"
   end
 end
-ap @temp
-HashToXml.convert(@temp)
+@res[$res_var] = @temp
+HashToXml.convert(@res)
