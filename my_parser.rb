@@ -72,7 +72,11 @@ end
 
 def case_3(line)
   parts = line.chomp.split(" ")
-  parts.insert(3, nil)
+  level = parts[0]
+  id = parts[2]
+  tag = parts[1]
+  parts.clear
+  parts << level << id << tag << nil
   update_hash(parts)
 end
 

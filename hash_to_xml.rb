@@ -1,10 +1,11 @@
 module HashToXml
+  $xmlFile = File.new("output.xml", "w+")
   def self.convert(h)
-    puts "<gedcom>"
+    $xmlFile.syswrite("<gedcom>\n")
     for i in 0...(h.count)
       print self.process_hash(h[i]).to_s
     end
-    puts "</gedcom>"
+    $xmlFile.syswrite("</gedcom>")
   end
 
   def self.process_hash(h)
@@ -13,20 +14,20 @@ module HashToXml
     value = h["data"] if (h.count > 2)
     data = h["data"] if !value.nil?
     if h.count > 2
-      print "<" + h["tag"].to_s
-      print " id=\"" + id.to_s if !id.nil?
-      print " value=\"" + value.to_s if !value.nil?
-      puts "\">"
+      $xmlFile.syswrite("<" + h["tag"].to_s)
+      $xmlFile.syswrite(" id=\"" + id.to_s + "\"") if !id.nil?
+      $xmlFile.syswrite(" value=\"" + value.to_s + "\"") if !value.nil?
+      $xmlFile.syswrite(">\n")
       for var in 0...(h.count - 2)
         HashToXml.process_hash(h[var])
       end
-      puts "</" + tag.to_s + ">"
+      $xmlFile.syswrite("</" + tag.to_s + ">\n")
     else
-      print "<" + h["tag"].to_s
-      print " id=" + id.to_s if !id.nil?
-      puts ">"
-      puts h["data"].to_s
-      puts "</" + tag.to_s + ">"
+      $xmlFile.syswrite("<" + h["tag"].to_s)
+      $xmlFile.syswrite(" id=\"" + id.to_s + "\"") if !id.nil?
+      $xmlFile.syswrite(">\n")
+      $xmlFile.syswrite(h["data"].to_s + "\n")
+      $xmlFile.syswrite("</" + tag.to_s + ">\n")
     end
   end
 end
