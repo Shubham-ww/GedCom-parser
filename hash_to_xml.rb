@@ -4,13 +4,11 @@ require 'pry'
 module HashToXml
   def self.convert(h)
     puts "<gedcom>"
-    puts self.process_hash(h).to_s
+    print self.process_hash(h).to_s
     puts "</gedcom>"
   end
 
   def self.process_hash(h)
-    # binding.pry
-    # tabs = 1
     id = h["id"] if !h["id"].nil?
     tag = h["tag"]
     value = h["data"] if (h.count > 2)
@@ -19,21 +17,17 @@ module HashToXml
       print "<" + h["tag"].to_s
       print " id=\"" + id.to_s if !id.nil?
       print " value=\"" + value.to_s if !value.nil?
-      print "\">\n"
-      h.each_pair do |key, value|
-        if key.class != String
-          (h.count - 2).times do
-            self.process_hash(h[key])
-          end
-        end
+      puts "\">"
+      for var in 0...(h.count - 2)
+        HashToXml.process_hash(h[var])
       end
-      print "</" + tag.to_s + ">"
+      puts "</" + tag.to_s + ">"
     else
       print "<" + h["tag"].to_s
       print " id=" + id.to_s if !id.nil?
-      print ">\n"
+      puts ">"
       puts h["data"].to_s
-      print "</" + tag.to_s + ">\n"
+      puts "</" + tag.to_s + ">"
     end
   end
 end
