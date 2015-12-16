@@ -2,7 +2,6 @@
 $LOAD_PATH << '.'
 require "hash_to_xml"
 require 'xmlsimple'
-require 'pry'
 
 @temp = Hash.new
 @res = Hash.new
@@ -77,7 +76,6 @@ def zero_level(line)
     $res_var += 1
     @temp = Hash.new
   end
-  # binding.pry
   @temp["id"] = parts[1] if !parts[1].nil?
   @temp["tag"] = parts[2] if !parts[2].nil?
 end
