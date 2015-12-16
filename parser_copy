@@ -1,0 +1,112 @@
+#!/usr/bin/ruby
+require 'xmlsimple'
+require 'pry'
+require 'ap'
+
+$temp = Hash.new
+$res = Array.new
+$x = 1
+$var = 0
+#[level, id, tag, data]
+case1, case2, case3 = false
+
+case1Regex = /^(\d{1}) ([A-Z]{3,4}) ([^@]{1}[A-z0-9\-\@\.\ ]*[^@]{1}$)/
+case2Regex = /^(\d{1}) (@[A-z0-9]*@) ([A-Z]{3,4})$/
+case3Regex = /^(\d{1}) ([A-Z]{3,4}) (@[A-z0-9]*@)$/
+zero_levelRegex = /^(0) (@[A-z0-9]*@) ([A-Z]{3,4})$/
+
+def check_child(r_hash, values, level, var)
+  if level < values[0].to_i
+    if r_hash[level].class == Hash
+      check_child(r_hash[level], values, level+1, var)
+    else
+      r_hash[level] = Array.new
+      temp2 = Hash.new
+      temp2["id"] = values[1] if !values[1].nil?
+      temp2["tag"] = values[2] if !values[2].nil?
+      temp2["data"] = values[3] if !values[3].nil?
+      r_hash[level] << temp2
+    end
+  else
+    r_hash[var.to_s][level] = Hash.new
+    temp2 = Hash.new
+    temp2["id"] = values[1] if !values[1].nil?
+    temp2["tag"] = values[2] if !values[2].nil?
+    temp2["data"] = values[3] if !values[3].nil?
+    r_hash[var.to_s][level] = temp2
+  end
+end
+
+def update_hash(parts)
+  if $x < parts[0].to_i
+    check_child($temp, parts, $x, $var)
+  elsif (flag = $temp[parts[0].to_i].nil?) || !$temp[parts[0].to_i].empty?
+    $temp[parts[0].to_i] = Hash.new if flag
+    temp2 = Hash.new
+    temp2["id"] = parts[1] if !parts[1].nil?
+    temp2["tag"] = parts[2] if !parts[2].nil?
+    temp2["data"] = parts[3] if !parts[3].nil?
+    $temp[parts[0].to_i][($var - 1).to_s] = temp2
+    $var -= 1
+  end
+end
+
+def zero_level(line)
+  # binding.pry
+  parts = line.chomp.split(" ")
+  parts.insert(3, nil)
+  if !$temp.empty?
+    $res << $temp
+    $temp.clear
+  end
+  $temp["id"] = parts[1] if !parts[1].nil?
+  $temp["tag"] = parts[2] if !parts[2].nil?
+end
+
+def case_1(line)
+  # binding.pry
+  line.match(/^(\d{1}) ([A-Z]{3,4}) ([A-z0-9\-\@\.\ ]*)$/)
+  parts = Array.new
+  parts << $1 << nil << $2 << $3
+  update_hash(parts)
+end
+
+def case_2(line)
+  # binding.pry
+  parts = line.chomp.split(" ")
+  parts.insert(3, nil)
+  update_hash(parts)
+end
+
+def case_3(line)
+  # binding.pry
+  parts = line.chomp.split(" ")
+  parts.insert(3, nil)
+  update_hash(parts)
+end
+
+while line = gets
+  case1 = !line.match(case1Regex).nil?
+  case2 = !line.match(case2Regex).nil?
+  case3 = !line.match(case3Regex).nil?
+  # binding.pry
+  if case1||case2||case3
+    if !line.match(zero_levelRegex).nil?
+      zero_level(line)
+    else
+      case case1|case2|case3
+      when case1
+        case_1(line)
+      when case2
+        case_2(line)
+      when case3
+        case_3(line)
+      else
+        p "impossible"
+      end
+    end
+  else
+    p "Invalid GEDCOM file!"
+  end
+end
+ap $temp

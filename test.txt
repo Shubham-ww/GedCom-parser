@@ -1,0 +1,8 @@
+0 @SM2@ SUBM
+1 CHAN asdja
+2 DATE 12 Mar 2000
+3 TEMP tygdhb
+3 TYSF asdub
+4 TYHB afhu ajsasd
+1 RIN 2
+2 UOJB kojifs
