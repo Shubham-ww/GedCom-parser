@@ -8,9 +8,9 @@ require 'ap'
 @temp = Hash.new
 $res = Hash.new
 $res_var = 0
-$x = 0
+$x = 1
 $var = 0
-$last_var = nil
+$last_child_for = nil
 $last_level = 1
 #[level, id, tag, data]
 case1, case2, case3 = false
@@ -20,32 +20,17 @@ case2Regex = /^(\d{1}) (@[A-z0-9]*@) ([A-Z]{3,4})$/
 case3Regex = /^(\d{1}) ([A-Z]{3,4}) (@[A-z0-9]*@)$/
 zero_levelRegex = /^(0) (@[A-z0-9]*@) ([A-Z]{3,4})$/
 
-def check_child(r_hash, values, level, var)
+def check_child(r_hash, values, level)
+  flag = ($last_level == values[0].to_i - 1)
+  var = r_hash.count - 2
   if level < (values[0].to_i)
-    if (flag = (level == values[0].to_i - 1 && $last_level == values[0].to_i)) || r_hash[var].class == Hash
-      if flag
-        var += 1
-        check_child(r_hash, values, level + 1, var)
-      else
-        check_child(r_hash[var], values, level + 1, var)
-      end
-    else
-      r_hash[var] = Hash.new
-      r_hash[var]["id"] = values[1] if !values[1].nil?
-      r_hash[var]["tag"] = values[2] if !values[2].nil?
-      r_hash[var]["data"] = values[3] if !values[3].nil?
-      $last_level = values[0].to_i
-    end
+    check_child(r_hash[var-1], values, level + 1)
   else
-    if r_hash[var].class == Hash
-      check_child(r_hash, values, level, var + 1)
-    else
-      r_hash[var] = Hash.new
-      r_hash[var]["id"] = values[1] if !values[1].nil?
-      r_hash[var]["tag"] = values[2] if !values[2].nil?
-      r_hash[var]["data"] = values[3] if !values[3].nil?
-      $last_level = values[0].to_i
-    end
+    r_hash[var] = Hash.new
+    r_hash[var]["id"] = values[1] if !values[1].nil?
+    r_hash[var]["tag"] = values[2] if !values[2].nil?
+    r_hash[var]["data"] = values[3] if !values[3].nil?
+    $last_level = values[0].to_i
   end
 end
 
@@ -53,7 +38,7 @@ def update_hash(parts)
   $var = @temp.count - 2
   if $last_level < parts[0].to_i || parts[0].to_i > 1
     $var -= 1
-    check_child(@temp, parts, $x, $var)
+    check_child(@temp, parts, $x)
   elsif @temp[$var].nil?
     @temp[$var] = Hash.new
     @temp[$var]["id"] = parts[1] if !parts[1].nil?
@@ -64,7 +49,6 @@ def update_hash(parts)
 end
 
 def zero_level(line)
-  # binding.pry
   parts = line.chomp.split(" ")
   parts.insert(3, nil)
   if !@temp.empty?
@@ -119,4 +103,4 @@ while line = gets
   end
 end
 ap @temp
-# HashToXml.convert(@temp)
+HashToXml.convert(@temp)
